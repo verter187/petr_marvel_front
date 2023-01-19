@@ -6,6 +6,11 @@ import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
 class CharList extends Component {
+  // constructor(props) {
+  //   super(props);
+  //   this.onCharsLoaded = props.onCharsLoaded;
+  // }
+
   componentDidMount() {
     console.log("componentDidMount");
     this.updateChars();
@@ -36,7 +41,11 @@ class CharList extends Component {
 
   render() {
     let { chars, loading, error } = this.state;
-    let contents = error ? <ErrorMessage /> : <ViewChars chars={chars} />;
+    let contents = error ? (
+      <ErrorMessage />
+    ) : (
+      <ViewChars chars={chars} props={this.props} />
+    );
     contents = loading ? <Spinner /> : contents;
     console.log("render");
 
@@ -51,10 +60,14 @@ class CharList extends Component {
   }
 }
 
-const ViewChars = ({ chars }) => {
+const ViewChars = ({ chars, props }) => {
   return chars.map((item) => (
-    <li key={item.id} className="char__item">
-      <img src={item.thumbnail} alt="abyss" />
+    <li
+      key={item.id}
+      onClick={() => props.onCharSelected(item.id)}
+      className="char__item"
+    >
+      <img src={item.thumbnail} alt={item.name} />
       <div className="char__name">Abyss</div>
     </li>
   ));
