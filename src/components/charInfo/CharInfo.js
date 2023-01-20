@@ -22,6 +22,7 @@ class CharInfo extends Component {
       this.updateChar();
     }
   }
+
   onCharLoaded = (char) => {
     this.setState({ char, loading: false, error: false });
   };
@@ -42,10 +43,11 @@ class CharInfo extends Component {
 
     this.onCharLoading();
 
-    return this.marvelService
+    this.marvelService
       .getCharacter(charId)
       .then(this.onCharLoaded)
       .catch(this.onError);
+    this.foo.bar = 0;
   };
 
   render() {

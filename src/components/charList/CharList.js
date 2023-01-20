@@ -16,31 +16,60 @@ class CharList extends Component {
     this.updateChars();
     // this.timerId = setInterval(this.updateChar, 3000);
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.offset !== prevState.offset) {
+      this.updateChars(this.state.offset);
+    }
+  }
 
   state = {
     chars: [],
+    offset: 210,
     loading: true,
     error: false,
+    newItemLoading: false,
+    charEnded: false,
   };
   marvelService = new MarvelService();
-  onCharsLoaded = (chars) => {
-    this.setState({ chars, loading: false, error: false });
+
+  onLoadMore = () => {
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        offset: prevState.offset + 9,
+      };
+    });
+  };
+
+  onCharsLoading = () => {
+    this.setState({ newItemLoading: true });
+  };
+
+  onCharsLoaded = (newChars) => {
+    let ended = newChars.length < 9;
+    this.setState(({ chars }) => ({
+      chars: [...chars, ...newChars],
+      loading: false,
+      error: false,
+      newItemLoading: false,
+      charEnded: ended,
+    }));
   };
 
   onError = () => {
     this.setState({ loading: false, error: true });
   };
 
-  updateChars = () => {
-    console.log("updateChars");
+  updateChars = (offset) => {
+    this.onCharsLoading();
     this.marvelService
-      .getAllCharacters()
+      .getAllCharacters(offset)
       .then(this.onCharsLoaded)
       .catch(this.onError);
   };
 
   render() {
-    let { chars, loading, error } = this.state;
+    let { chars, loading, error, newItemLoading, charEnded } = this.state;
     let contents = error ? (
       <ErrorMessage />
     ) : (
@@ -52,7 +81,12 @@ class CharList extends Component {
     return (
       <div className="char__list">
         <ul className="char__grid">{contents}</ul>
-        <button className="button button__main button__long">
+        <button
+          className="button button__main button__long"
+          onClick={() => this.onLoadMore()}
+          disabled={newItemLoading}
+          style={{ display: charEnded ? "none" : "block" }}
+        >
           <div className="inner">load more</div>
         </button>
       </div>
