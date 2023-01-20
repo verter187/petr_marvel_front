@@ -1,17 +1,13 @@
 import { Component } from "react";
 import "./charInfo.scss";
-import thor from "../../resources/img/thor.jpeg";
 import MarvelService from "../../services/MarvelService";
+import Skeleton from "../skeleton/Skeleton";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
 class CharInfo extends Component {
-  constructor(props) {
-    super(props);
-    console.log("sfdfdsfds");
-  }
   state = {
-    char: {},
+    char: null,
     loading: false,
     error: false,
   };
@@ -21,14 +17,16 @@ class CharInfo extends Component {
   componentDidMount() {
     this.updateChar();
   }
-  componentDidUpdate() {
-    console.log("componentDidUpdate");
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.charId !== prevProps.charId) {
+      this.updateChar();
+    }
   }
   onCharLoaded = (char) => {
     this.setState({ char, loading: false, error: false });
   };
 
-  onCharLoading = (char) => {
+  onCharLoading = () => {
     this.setState({ loading: true });
   };
 
@@ -37,7 +35,6 @@ class CharInfo extends Component {
   };
 
   updateChar = () => {
-    console.log("где я!");
     const { charId } = this.props;
     if (!charId) {
       return;
@@ -45,19 +42,28 @@ class CharInfo extends Component {
 
     this.onCharLoading();
 
-    this.marvelService
+    return this.marvelService
       .getCharacter(charId)
       .then(this.onCharLoaded)
       .catch(this.onError);
   };
 
   render() {
-    let { char, loading, error } = this.state;
-    console.log(char);
-    let contents = error ? <ErrorMessage /> : <View char={char} />;
-    contents = loading ? <Spinner /> : contents;
+    const { char, loading, error } = this.state;
 
-    return <div className="char__info">{contents}</div>;
+    const skeleton = char || loading || error ? null : <Skeleton />;
+    const errorMessage = error ? <ErrorMessage /> : null;
+    const spinner = loading ? <Spinner /> : null;
+    const content = loading || error || !char ? null : <View char={char} />;
+
+    return (
+      <div className="char__info">
+        {skeleton}
+        {errorMessage}
+        {spinner}
+        {content}
+      </div>
+    );
   }
 }
 const View = ({ char }) => {
@@ -67,15 +73,30 @@ const View = ({ char }) => {
     description = "description is missing",
     homepage,
     wiki,
+    comics,
   } = char;
 
-  // let notImage = thumbnail.includes("image_not_available"),
-  //   objectFit = notImage ? "contain" : "cover";
+  const limit = 10;
 
+  let notImage = thumbnail.includes("image_not_available"),
+    objectFit = notImage ? "contain" : "cover";
+  console.log("sdffdsfds" + comics.length);
+  comics =
+    comics.length === 0
+      ? "Comics not found"
+      : comics
+          .filter((_, i) => i < limit)
+          .map((item, i) => (
+            <li key={i} className="char__comics-item">
+              {item.name}
+            </li>
+          ));
+
+  console.log(comics);
   return (
     <>
       <div className="char__basics">
-        <img src={thumbnail} alt={name} />
+        <img style={{ objectFit: objectFit }} src={thumbnail} alt={name} />
         <div>
           <div className="char__info-name">{name}</div>
           <div className="char__btns">
@@ -90,9 +111,7 @@ const View = ({ char }) => {
       </div>
       <div className="char__descr">{description}</div>
       <div className="char__comics">Comics:</div>
-      <ul className="char__comics-list">
-        <li className="char__comics-item">Alpha Flight (1983) #50</li>
-      </ul>
+      <ul className="char__comics-list">{comics}</ul>
     </>
   );
 };

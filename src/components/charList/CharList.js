@@ -61,16 +61,24 @@ class CharList extends Component {
 }
 
 const ViewChars = ({ chars, props }) => {
-  return chars.map((item) => (
-    <li
-      key={item.id}
-      onClick={() => props.onCharSelected(item.id)}
-      className="char__item"
-    >
-      <img src={item.thumbnail} alt={item.name} />
-      <div className="char__name">Abyss</div>
-    </li>
-  ));
+  return chars.map((item) => {
+    let notImage = item.thumbnail.includes("image_not_available"),
+      objectFit = notImage ? "contain" : "cover";
+    return (
+      <li
+        key={item.id}
+        onClick={() => props.onCharSelected(item.id)}
+        className="char__item"
+      >
+        <img
+          style={{ objectFit: objectFit }}
+          src={item.thumbnail}
+          alt={item.name}
+        />
+        <div className="char__name">{item.name}</div>
+      </li>
+    );
+  });
 };
 
 export default CharList;

@@ -6,11 +6,6 @@ import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
 class RandomChar extends Component {
-  constructor(props) {
-    super(props);
-    // console.log("constructor");
-  }
-
   componentDidMount() {
     // console.log("componentDidMount");
     this.updateChar();
@@ -90,7 +85,7 @@ const View = ({ char }) => {
 
   let notImage = thumbnail.includes("image_not_available"),
     objectFit = notImage ? "contain" : "cover";
-  // console.log(thumbnail, notImage);
+
   description =
     description.length > descrLen
       ? description.slice(0, descrLen) + "..."
