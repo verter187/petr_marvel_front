@@ -67,6 +67,7 @@ const CharList = (props) => {
     itemRefs.current.forEach((item) =>
       item.classList.remove("char__item_selected")
     );
+    console.log(3333333333333, itemRefs.current);
     if (itemRefs.current.length > 0) {
       itemRefs.current[id].classList.add("char__item_selected");
       itemRefs.current[id].focus();

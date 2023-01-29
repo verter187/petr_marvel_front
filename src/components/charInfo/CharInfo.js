@@ -9,13 +9,14 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 import "./charInfo.scss";
 
 const CharInfo = ({ charId }) => {
-  const [char, setChar] = useState({});
+  const [char, setChar] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const marvelService = new MarvelService();
 
   const onCharLoaded = (char) => {
-    setChar({ char });
+    setChar(char);
+
     setLoading((loading) => false);
     setError((error) => false);
   };
@@ -51,7 +52,7 @@ const CharInfo = ({ charId }) => {
   const errorMessage = error ? <ErrorMessage /> : null;
   const spinner = loading ? <Spinner /> : null;
   const content = loading || error || !char ? null : <View char={char} />;
-  console.log("????", char);
+
   return (
     <div className="char__info">
       {skeleton}
@@ -125,44 +126,36 @@ const CharInfo = ({ charId }) => {
 //   }
 // }
 
-const View = ({
-  thumbnail,
-  name,
-  description = "description is missing",
-  homepage,
-  wiki,
-  comics,
-}) => {
-  // let {
-  //   thumbnail,
-  //   name,
-  //   description = "description is missing",
-  //   homepage,
-  //   wiki,
-  //   comics,
-  // } = char;
+const View = ({ char }) => {
+  let {
+    thumbnail,
+    name,
+    description = "description is missing",
+    homepage,
+    wiki,
+    comics,
+  } = char;
 
   const limit = 10;
 
-  // let notImage = thumbnail.includes("image_not_available"),
-  // let objectFit = notImage ? "contain" : "cover";
+  let notImage = thumbnail.includes("image_not_available"),
+    objectFit = notImage ? "contain" : "cover";
 
-  // comics =
-  //   comics.length === 0
-  //     ? "Comics not found"
-  //     : comics
-  //         .filter((_, i) => i < limit)
-  //         .map((item, i) => (
-  //           <li key={i} className="char__comics-item">
-  //             {item.name}
-  //           </li>
-  //         ));
+  comics =
+    comics.length === 0
+      ? "Comics not found"
+      : comics
+          .filter((_, i) => i < limit)
+          .map((item, i) => (
+            <li key={i} className="char__comics-item">
+              {item.name}
+            </li>
+          ));
 
   return (
     <>
       <div className="char__basics">
-        <img src={thumbnail} alt={name} />
-        {/* <img style={{ objectFit: objectFit }} src={thumbnail} alt={name} /> */}
+        <img style={{ objectFit: objectFit }} src={thumbnail} alt={name} />
         <div>
           <div className="char__info-name">{name}</div>
           <div className="char__btns">
@@ -177,7 +170,7 @@ const View = ({
       </div>
       <div className="char__descr">{description}</div>
       <div className="char__comics">Comics:</div>
-      {/* <ul className="char__comics-list">{comics}</ul> */}
+      <ul className="char__comics-list">{comics}</ul>
     </>
   );
 };
