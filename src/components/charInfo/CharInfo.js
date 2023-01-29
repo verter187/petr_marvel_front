@@ -16,18 +16,16 @@ const CharInfo = ({ charId }) => {
 
   const onCharLoaded = (char) => {
     setChar(char);
-
-    setLoading((loading) => false);
-    setError((error) => false);
+    setLoading(false);
   };
 
   const onCharLoading = () => {
-    setLoading((loading) => true);
+    setLoading(true);
   };
 
   const onError = () => {
-    setLoading((loading) => false);
-    setError((error) => true);
+    setLoading(false);
+    setError(true);
   };
 
   const updateChar = (charId) => {
@@ -62,69 +60,6 @@ const CharInfo = ({ charId }) => {
     </div>
   );
 };
-
-// class CharInfo extends Component {
-//   state = {
-//     char: null,
-//     loading: false,
-//     error: false,
-//   };
-
-//   marvelService = new MarvelService();
-
-//   componentDidMount() {
-//     this.updateChar();
-//   }
-
-//   onCharLoaded = (char) => {
-//     this.setState({ char, loading: false, error: false });
-//   };
-
-//   onCharLoading = () => {
-//     this.setState({ loading: true });
-//   };
-
-//   onError = () => {
-//     this.setState({ loading: false, error: true });
-//   };
-
-//   componentDidUpdate(prevProps, prevState) {
-//     if (this.props.charId !== prevProps.charId) {
-//       this.updateChar();
-//     }
-//   }
-//   updateChar = () => {
-//     const { charId } = this.props;
-//     if (!charId) {
-//       return;
-//     }
-
-//     this.onCharLoading();
-
-//     this.marvelService
-//       .getCharacter(charId)
-//       .then(this.onCharLoaded)
-//       .catch(this.onError);
-//   };
-
-//   render() {
-//     const { char, loading, error } = this.state;
-
-//     const skeleton = char || loading || error ? null : <Skeleton />;
-//     const errorMessage = error ? <ErrorMessage /> : null;
-//     const spinner = loading ? <Spinner /> : null;
-//     const content = loading || error || !char ? null : <View char={char} />;
-
-//     return (
-//       <div className="char__info">
-//         {skeleton}
-//         {errorMessage}
-//         {spinner}
-//         {content}
-//       </div>
-//     );
-//   }
-// }
 
 const View = ({ char }) => {
   let {
