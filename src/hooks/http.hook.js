@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-const useHttp = () => {
+export const useHttp = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -15,10 +15,13 @@ const useHttp = () => {
 
       try {
         const response = await fetch(url, { method, body, headers });
+
         if (!response.ok) {
           throw new Error(`Could not fetch ${url}, status: ${response.status}`);
         }
+
         const data = await response.json();
+
         setLoading(false);
         return data;
       } catch (e) {
@@ -34,4 +37,3 @@ const useHttp = () => {
 
   return { loading, request, error, clearError };
 };
-export default useHttp;
